@@ -62,7 +62,7 @@ main p {
   background-color: fuchsia;
 }
 
-.correct-or-wrong {
+#correct-or-wrong {
   color: gray;
   font-style: italic;
 }

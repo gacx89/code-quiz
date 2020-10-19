@@ -45,6 +45,7 @@ var startTimer = function() {
       timerEl.textContent = "Time: " + score;
       score--;
     } else {
+      timerEl.textContent = "Time: 0";
       clearInterval(timeInterval);
     }
   }, 1000);
@@ -79,31 +80,30 @@ var startQuizButtonHandler = function() {
 var answerButtonHandler = function(event) {
   var targetEl = event.target;
 
-  if ((targetEl.matches(".answer-btn")) && (targetEl.getAttribute("data-answer-id") != quizItems[currentQuestion].correctAns)) { 
+  if ((targetEl.matches(".answer-btn")) && (targetEl.getAttribute("data-answer-id") != quizItems[currentQuestion].correctAns)) {
     score = score - 15;
     currentQuestion++;
     clearAnswers();
-    displayQuestion(currentQuestion);
-
-    correctOrWrongH2 = document.createElement("h2");
-    correctOrWrongH2.textContent = "Wrong!"
-    correctOrWrongH2.className = "correct-or-wrong";
-    correctOrWrongH2.style.borderTop = "2px solid gray";
-    correctEl.appendChild(correctOrWrongH2);
+    displayCorrectOrWrong("Wrong!");
+    console.log("Wrong Answer");
+    if (currentQuestion < quizItems.length){
+      displayQuestion(currentQuestion);
+    } else {
+      submitScore();
+    }
   }
   else if (targetEl.matches(".answer-btn")) {
     currentQuestion++;
     clearAnswers();
-    displayQuestion(currentQuestion);
+    displayCorrectOrWrong("Correct!");
+    console.log("Correct Answer");
 
-    correctOrWrongH2 = document.createElement("h2");
-    correctOrWrongH2.textContent = "Correct!"
-    correctOrWrongH2.className = "correct-or-wrong";
-    correctOrWrongH2.style.borderTop = "2px solid gray"
-    correctEl.appendChild(correctOrWrongH2);
+    if (currentQuestion < quizItems.length) {
+      displayQuestion(currentQuestion);
+    } else {
+      submitScore();
+    }
   }
-
-  
 };
 
 var clearAnswers = function() {
@@ -111,9 +111,51 @@ var clearAnswers = function() {
   for (var i = 0; i < oldAnswers.length; i++) {
     oldAnswers[i].remove();
   }
+};
 
-  var correctOrWrongH2 = document.querySelector(".correct-or-wrong");
-  correctOrWrongH2.remove();
+var displayCorrectOrWrong = function(correctOrWrong) {
+  var element = document.getElementById("correct-or-wrong");
+
+  if (typeof(element) != "undefined" && element != null) {
+    element.textContent = correctOrWrong;
+  } else {
+
+    correctOrWrongH2 = document.createElement("h2");
+    correctOrWrongH2.textContent = correctOrWrong;
+    correctOrWrongH2.id = "correct-or-wrong";
+    correctOrWrongH2.style.borderTop = "2px solid gray"
+    correctEl.appendChild(correctOrWrongH2);
+  }
+};
+
+var submitScore = function() {
+  questionH1.textContent="All done!";
+
+  if (score < 0){
+    score = 0;
+  }
+  answerP.textContent = "Your final score is " + score + ".";
+  answerP.style.display = "block";
+
+  submitScoreForm = document.createElement("form");
+  submitScoreForm.id = "score-form";
+  submitScoreLbl = document.createElement("label");
+  submitScoreLbl.setAttribute("for","initials");
+  submitScoreLbl.textContent = "Enter initials: ";
+  submitScoreInput = document.createElement("input");
+  submitScoreInput.setAttribute("type","text");
+  submitScoreInput.id = "initials";
+  submitScoreBtn = document.createElement("button");
+  submitScoreBtn.className = "btn scoreBtn";
+  submitScoreBtn.textContent = "Submit";
+  submitScoreBtn.style.margin = "0 10px 0 10px";
+
+  submitScoreForm.appendChild(submitScoreLbl);
+  submitScoreForm.appendChild(submitScoreInput);
+  submitScoreForm.appendChild(submitScoreBtn);
+
+  answersEl.appendChild(submitScoreForm);
+  
 };
 
 
