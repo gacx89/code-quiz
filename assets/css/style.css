@@ -11,7 +11,7 @@ header {
   justify-content: space-between;
 }
 
-header a {
+#high-scores, a {
   color: fuchsia;
   text-decoration: none;
 }
@@ -44,7 +44,7 @@ main p {
 }
 
 .answer-btn {
-  width: 100px;
+  width: 200px;
 }
 
 .btn {
@@ -54,7 +54,8 @@ main p {
   border-radius: 8px;
   color: white;
   background-color: navy;
-  
+  margin: 5px;
+  text-align: left;  
 
 }
 

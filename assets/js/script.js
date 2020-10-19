@@ -26,14 +26,16 @@ const quizItems = [
 ];
 
 var score = 75;
+var finalScore;
 var currentQuestion = 0;
+var highScores = [];
 
 var timerEl = document.querySelector("#timer");
 var startBtn = document.querySelector("#start-quiz-btn");
 var questionEl = document.querySelector("#question-wrapper");
 var answersEl = document.querySelector("#answers-wrapper");
 var correctEl = document.querySelector("#correct");
-
+var highScoresH3 = document.querySelector("#high-scores");
 var questionH1 = document.querySelector("#question");
 var answerP = document.querySelector("#answer");
 var pageContentEl = document.querySelector("#page-content");
@@ -65,7 +67,7 @@ var displayQuestion = function(index) {
 
   for (var i = 0; i < quizItems[index].answers.length; i++) {
     answerBtn = document.createElement("button");
-    answerBtn.textContent = quizItems[index].answers[i];
+    answerBtn.textContent = (i + 1) + ". " + quizItems[index].answers[i];
     answerBtn.className = "btn answer-btn";
     answerBtn.setAttribute("data-answer-id", i);
     answersEl.appendChild(answerBtn);
@@ -134,7 +136,11 @@ var submitScore = function() {
   if (score < 0){
     score = 0;
   }
-  answerP.textContent = "Your final score is " + score + ".";
+  finalScore = score;
+
+  answerP.textContent = "Your final score is " + finalScore + ".";
+  timerEl.remove();
+
   answerP.style.display = "block";
 
   submitScoreForm = document.createElement("form");
@@ -155,10 +161,117 @@ var submitScore = function() {
   submitScoreForm.appendChild(submitScoreBtn);
 
   answersEl.appendChild(submitScoreForm);
-  
+
 };
 
+var submitButtonHandler = function(event) {
+  var targetEl = event.target;
+  if (finalScore< 0) {
+    finalScore = 0;
+  }
+  if (targetEl.matches(".scoreBtn")){
+    saveHighScores();
+    showHighScores();
+  }
+};
+
+var showHighScores = function () {
+  questionH1.textContent = "High scores";
+  formToRemove = document.querySelector("#score-form");
+  if (formToRemove){ 
+    formToRemove.remove();
+  }
+  rightOrWrong = document.querySelector("#correct-or-wrong");
+
+  if (rightOrWrong){
+    rightOrWrong.remove();
+  }
+
+  startQuizButton = document.querySelector("#start-quiz-btn");
+
+  if (startQuizButton){
+    startQuizButton.remove();
+  }
+  
+
+  answerP.remove();
+  orderedList = document.createElement("OL");
+
+  
+  for (var i = 0; i < highScores.length; i++) {
+    var listItem = document.createElement("LI");
+    listItem.textContent = highScores[i].name + " - " + highScores[i].score;
+    orderedList.appendChild(listItem);
+  }
+
+  answersEl.appendChild(orderedList);
+  answersEl.style.backgroundColor = "mediumorchid"
+
+  goBackBtn = document.createElement("button");
+  goBackBtn.textContent = "Go back";
+  goBackBtn.id = "go-back";
+  goBackBtn.className = "btn";
+
+  clearScoresBtn = document.createElement("button");
+  clearScoresBtn.textContent = "Clear High Scores";
+  clearScoresBtn.id = "clear-scores";
+  clearScoresBtn.className = "btn";
+
+  correctEl.appendChild(goBackBtn);
+  correctEl.appendChild(clearScoresBtn);
+
+
+
+
+};
+
+var saveHighScores = function(){
+  initials = document.querySelector("#initials").value;
+  highScores.push({ name: initials, score: finalScore });
+  sortHighScores();
+  localStorage.setItem("high-scores", JSON.stringify(highScores));
+};
+
+var loadHighScores = function () {
+  highScores = localStorage.getItem("high-scores");
+  if (highScores === null) {
+    highScores = [];
+    return false;
+  }
+
+  highScores = JSON.parse(highScores);
+  sortHighScores();
+
+};
+
+var sortHighScores = function () {
+  highScores.sort(function (a, b) { return b.score - a.score });
+
+  console.log(highScores);
+};
+
+var showHighScoresHandler = function (){
+  showHighScores();
+};
+
+var scoreButtonHandler = function (event){
+  var targetEl = event.target;
+
+  if (targetEl.matches("#go-back")){
+    location.reload();
+  } 
+  else if (targetEl.matches("#clear-scores")) {
+    localStorage.clear();
+    window.alert("High Scores Cleared!");
+    location.reload();
+  }
+}
+
+loadHighScores();
 
 startBtn.addEventListener("click", startQuizButtonHandler);
 pageContentEl.addEventListener("click", answerButtonHandler);
+answersEl.addEventListener("click", submitButtonHandler);
+highScoresH3.addEventListener("click", showHighScoresHandler);
+correctEl.addEventListener("click", scoreButtonHandler);
 
