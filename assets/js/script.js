@@ -199,6 +199,16 @@ var submitButtonHandler = function(event) {
 
 // Display list of high scores
 var showHighScores = function () {
+  var checkAlreadyDisplayed = document.getElementById("go-back");
+
+  // Check if user already has high scores screen displayed. If so, exit function with return code 0.
+  if (typeof(checkAlreadyDisplayed) != "undefined" && checkAlreadyDisplayed != null){
+    return 0;
+  }
+
+  //Clean up display by removing elements so that high scores can be displayed
+  clearAnswers();
+
   questionH1.textContent = "High scores";
   formToRemove = document.querySelector("#score-form");
   if (formToRemove){ 
@@ -215,7 +225,6 @@ var showHighScores = function () {
   if (startQuizButton){
     startQuizButton.remove();
   }
-  
 
   answerP.remove();
   orderedList = document.createElement("OL");
