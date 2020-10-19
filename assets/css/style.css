@@ -1,0 +1,50 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+}
+
+header a {
+  color: fuchsia;
+  text-decoration: none;
+}
+
+main {
+  width: 50%;
+  margin: auto;
+}
+
+main h1 {
+  text-align: center;
+}
+
+main p {
+  text-align: center;
+}
+
+main button {
+  margin: auto;
+  text-align: center;
+  display: block;
+}
+
+.btn {
+  outline: none;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  color: white;
+  background-color: navy;
+
+}
+
+.btn:hover {
+  background-color: fuchsia;
+}
